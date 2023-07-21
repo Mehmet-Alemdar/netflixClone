@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MyTheme } from './lib/theme';
@@ -8,7 +8,11 @@ import HomeScreen from './screens/home';
 
 const Tab = createBottomTabNavigator();
 
+const { width, height } = Dimensions.get('window');
+
 export default function App() {
+  const netflixLogoSize = width * 0.11;
+  const headerRightIconsSize = width * 0.07;
   return (
     <NavigationContainer theme={ MyTheme }>
       <Tab.Navigator
@@ -35,9 +39,26 @@ export default function App() {
           },
           tabBarActiveTintColor: MyTheme.colors.bottomTabActiveText,
           tabBarInactiveTintColor: MyTheme.colors.bottomTabInactiveText,
+          headerTransparent: true,
+          headerTitle: '',
+          headerBackground: () => (
+            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }} />
+          ),
         })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Home" component={HomeScreen} 
+          options={{
+            headerLeft: () => (
+              <Image source={require('./assets/netflix.png')} style={{width: netflixLogoSize, height: netflixLogoSize, marginLeft: 5}}/>
+            ),
+            headerRight: () => (
+              <View style={{flexDirection: 'row', marginRight: 15, gap: 15, justifyContent: 'center', alignItems: 'center'}}>
+                <Ionicons name="search" size={ headerRightIconsSize} color={MyTheme.colors.bottomTabText} style={{marginRight: 10}} />
+                <Image source={require('./assets/avatar.png')} style={{width: headerRightIconsSize, height: headerRightIconsSize, borderRadius: 6}}/>
+              </View>
+            )
+          }}
+        />
         <Tab.Screen name="Games" component={HomeScreen} />
         <Tab.Screen name="New and Populer" component={HomeScreen} />
         <Tab.Screen name="Downloads" component={HomeScreen} />
