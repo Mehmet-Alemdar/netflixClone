@@ -1,19 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Text, View, Image, Dimensions, Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MyTheme } from './lib/theme';
-import { Ionicons, Foundation } from 'react-native-vector-icons';
+import { Ionicons } from 'react-native-vector-icons';
 import HomeScreen from './screens/home';
 
 const Tab = createBottomTabNavigator();
 
 const { width, height } = Dimensions.get('window');
 
+import HeaderColorContext from './context/headerColorContext';
+
 export default function App() {
   const netflixLogoSize = width * 0.11;
   const headerRightIconsSize = width * 0.07;
+
+  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [headerBackgroundColor, setHeaderBackgroundColor] = useState(
+    scrollY.interpolate({
+      inputRange: [0, 200],
+      outputRange: ['transparent', 'rgba(0,0,0,0.9)',], 
+      extrapolate: 'clamp',
+    })
+  );
+
+  const [headerHeight, setHeaderHeight] = useState(
+    scrollY.interpolate({
+      inputRange: [0,200],
+      outputRange: [0, 40],
+      extrapolate: 'clamp',
+    })
+  )
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 150], 
+    outputRange: [1, 0], 
+    extrapolate: 'clamp',
+  });
+
   return (
+    <HeaderColorContext.Provider value={[headerBackgroundColor, setHeaderBackgroundColor, scrollY, headerHeight]}>
     <NavigationContainer theme={ MyTheme }>
       <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -41,9 +68,17 @@ export default function App() {
           tabBarInactiveTintColor: MyTheme.colors.bottomTabInactiveText,
           headerTransparent: true,
           headerTitle: '',
-          headerBackground: () => (
-            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }} />
-          ),
+          // headerBackground: () => (
+          //   <Animated.View style={{flex: 1, backgroundColor: headerBackgroundColor, display: 'flex'}}>
+          //     <Animated.View style={{ height: height / 7}} />
+          //     <Animated.View style={{display: 'flex',flexDirection: 'row', height: 40, opacity: headerOpacity, bottom: headerHeight, justifyContent: 'space-around', alignItems: 'center'}}>
+          //       <Text style={{color: '#f3f3f3', fontSize: 18, fontWeight: '700'}}>Diziler</Text>
+          //       <Text style={{color: '#f3f3f3', fontSize: 18, fontWeight: '700'}}>Filmler</Text>
+          //       <Text style={{color: '#f3f3f3', fontSize: 18, fontWeight: '700'}}>Kategoriler</Text>
+          //     </Animated.View>
+          //   </Animated.View>
+
+          // ),
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} 
@@ -56,7 +91,17 @@ export default function App() {
                 <Ionicons name="search" size={ headerRightIconsSize} color={MyTheme.colors.bottomTabText} style={{marginRight: 10}} />
                 <Image source={require('./assets/avatar.png')} style={{width: headerRightIconsSize, height: headerRightIconsSize, borderRadius: 6}}/>
               </View>
-            )
+            ),
+            headerBackground: () => (
+              <Animated.View style={{backgroundColor: headerBackgroundColor, display: 'flex', bottom: headerHeight,}}>
+                <Animated.View style={{ height: height / 7.5}} />
+                <Animated.View style={{display: 'flex',flexDirection: 'row', height: 30, opacity: headerOpacity, justifyContent: 'space-around', alignItems: 'center'}}>
+                  <Text style={{color: '#f3f3f3', fontSize: width * 0.05, fontWeight: '700'}}>Diziler</Text>
+                  <Text style={{color: '#f3f3f3', fontSize: width * 0.05, fontWeight: '700'}}>Filmler</Text>
+                  <Text style={{color: '#f3f3f3', fontSize: width * 0.05, fontWeight: '700'}}>Kategoriler</Text>
+                </Animated.View>
+              </Animated.View>
+            ),
           }}
         />
         <Tab.Screen name="Games" component={HomeScreen} />
@@ -64,6 +109,7 @@ export default function App() {
         <Tab.Screen name="Downloads" component={HomeScreen} />
       </Tab.Navigator>
     </NavigationContainer>
+    </HeaderColorContext.Provider>
   );
 }
 

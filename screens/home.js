@@ -1,12 +1,117 @@
-import { View, Text, StyleSheet, Dimensions, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
+import { useState, useContext, useEffec, useRef } from 'react';
+import { View, Text, StyleSheet, Dimensions,Animated, ScrollView, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, Foundation } from 'react-native-vector-icons';
-
+import { Ionicons } from 'react-native-vector-icons';
+import HeaderColorContext from '../context/headerColorContext';
 
 const { width, height } = Dimensions.get('window');
+
+import ContentImage from '../components/contentImage';
+import { StatusBar } from 'expo-status-bar';
+
+const data = [
+  {
+    title: 'Gündemdekiler',
+    content: [
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+    ]
+  },
+  {
+    title: 'Listem',
+    content: [
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+    ]
+  },
+  {
+    title: 'Yeniden İzle',
+    content: [
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+    ]
+  },
+  {
+    title: 'Listem',
+    content: [
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+    ]
+  },
+  {
+    title: 'Yeniden İzle',
+    content: [
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+      '../assets/contentImages/spiderman.png',
+    ]
+  }
+];
+
 const Home = () => {
+  let [headerBackgroundColor, setHeaderHeight, scrollY] = useContext(HeaderColorContext);
+  const prevOffsetY = useRef(0);
+
+  const top10IconSize = width * 0.06;
+
+
+  const handleScroll = Animated.event(
+      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+      { useNativeDriver: false,
+        // listener: (event) => {
+        //   const offsetY = event.nativeEvent.contentOffset.y;
+        //   if (offsetY > prevOffsetY.current) {
+        //     console.log('down');
+        //     setHeaderHeight("down");
+        //   }
+        //   if (offsetY < prevOffsetY.current) {
+        //     console.log('up');
+        //     setHeaderHeight("up");
+        //   }
+        //   prevOffsetY.current = offsetY;
+        // }
+      }
+    )
+
+  const sayHi = () => {
+    console.log('hi');
+  }
   return (
-    <ScrollView>
+    <>
+    <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
+    <ScrollView
+    style={{ flex: 1 }}
+    onScroll={handleScroll}
+    // onScroll={Animated.event(
+    //   [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    //   { useNativeDriver: false }
+    // )}
+    scrollEventThrottle={6}
+    >
       <ImageBackground 
       style={styles.bannerContainer}
       source={{ uri: 'https://m.media-amazon.com/images/M/MV5BNTYzMDcxMjI2MV5BMl5BanBnXkFtZTcwOTE5MjYwMg@@._V1_.jpg'}}
@@ -19,7 +124,8 @@ const Home = () => {
         end={{y: 0.95, x: 0}}
         >
           <View style={styles.bannerContainerActionsInfoBox}>
-            <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>New Episodes</Text>
+            <Image source={require('../assets/top10.png')} style={{width: top10IconSize, height: top10IconSize, resizeMode: 'contain'}}/>
+            <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>Filmlerde Bugün 3 Numara</Text>
           </View>
           <View style={styles.bannerContainerActionsBox}>
             <View style={styles.actionBox}>
@@ -30,13 +136,20 @@ const Home = () => {
               <Text style={{color: '#000', fontSize: width * 0.045, fontWeight: 'bold'}}>Oynat</Text>
             </TouchableOpacity>
             <View style={styles.actionBox}>
-              <Ionicons name="information-circle" size={ 24 } color="#fff" />
+              <Ionicons name="information-circle-outline" size={ 24 } color="#fff" />
               <Text style={styles.actionBoxText}>Bilgi</Text>
             </View>
           </View>
         </LinearGradient>
       </ImageBackground>
+      <View style={{marginBottom: 20}}>
+        {data.map((item, index) => (
+          <ContentImage key={index} data={item} />
+        ))}
+      </View>
+
     </ScrollView>
+    </>
   );
 }
 
@@ -55,8 +168,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#fff',
+  },
+  bannerContainerActionsInfoBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
   },
   bannerContainerActionsBox: {
     width: '100%',
