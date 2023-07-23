@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, Dimensions, Animated } from 'react-nativ
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MyTheme } from './lib/theme';
-import { Ionicons } from 'react-native-vector-icons';
+import { Ionicons, MaterialIcons} from 'react-native-vector-icons';
 import HomeScreen from './screens/home';
 
 const Tab = createBottomTabNavigator();
@@ -13,21 +13,21 @@ const { width, height } = Dimensions.get('window');
 import HeaderColorContext from './context/headerColorContext';
 
 export default function App() {
-  const netflixLogoSize = width * 0.11;
+  const netflixLogoSize = width * 0.1;
   const headerRightIconsSize = width * 0.07;
 
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerBackgroundColor, setHeaderBackgroundColor] = useState(
     scrollY.interpolate({
       inputRange: [0, 200],
-      outputRange: ['transparent', 'rgba(0,0,0,0.9)',], 
+      outputRange: ['transparent', 'rgba(0,0,0,0.8)',], 
       extrapolate: 'clamp',
     })
   );
 
   const [headerHeight, setHeaderHeight] = useState(
     scrollY.interpolate({
-      inputRange: [0,200],
+      inputRange: [0, 200],
       outputRange: [0, 40],
       extrapolate: 'clamp',
     })
@@ -38,9 +38,9 @@ export default function App() {
     outputRange: [1, 0], 
     extrapolate: 'clamp',
   });
-
+  
   return (
-    <HeaderColorContext.Provider value={[headerBackgroundColor, setHeaderBackgroundColor, scrollY, headerHeight]}>
+    <HeaderColorContext.Provider value={[scrollY]}>
     <NavigationContainer theme={ MyTheme }>
       <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -59,7 +59,7 @@ export default function App() {
             } else if (route.name === 'Downloads') {
               iconName = focused ? 'download' : 'download-outline';
             }
-            return <Ionicons name={iconName} size={iconSize} color={iconColor} />;
+            return <Ionicons name={iconName} size={iconSize} color={iconColor}/>;
           },
           tabBarStyle: {
             backgroundColor: MyTheme.colors.bottomTabBackground,
@@ -68,17 +68,7 @@ export default function App() {
           tabBarInactiveTintColor: MyTheme.colors.bottomTabInactiveText,
           headerTransparent: true,
           headerTitle: '',
-          // headerBackground: () => (
-          //   <Animated.View style={{flex: 1, backgroundColor: headerBackgroundColor, display: 'flex'}}>
-          //     <Animated.View style={{ height: height / 7}} />
-          //     <Animated.View style={{display: 'flex',flexDirection: 'row', height: 40, opacity: headerOpacity, bottom: headerHeight, justifyContent: 'space-around', alignItems: 'center'}}>
-          //       <Text style={{color: '#f3f3f3', fontSize: 18, fontWeight: '700'}}>Diziler</Text>
-          //       <Text style={{color: '#f3f3f3', fontSize: 18, fontWeight: '700'}}>Filmler</Text>
-          //       <Text style={{color: '#f3f3f3', fontSize: 18, fontWeight: '700'}}>Kategoriler</Text>
-          //     </Animated.View>
-          //   </Animated.View>
-
-          // ),
+          headerShadowVisible: false,
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} 
@@ -93,12 +83,15 @@ export default function App() {
               </View>
             ),
             headerBackground: () => (
-              <Animated.View style={{backgroundColor: headerBackgroundColor, display: 'flex', bottom: headerHeight,}}>
-                <Animated.View style={{ height: height / 7.5}} />
-                <Animated.View style={{display: 'flex',flexDirection: 'row', height: 30, opacity: headerOpacity, justifyContent: 'space-around', alignItems: 'center'}}>
-                  <Text style={{color: '#f3f3f3', fontSize: width * 0.05, fontWeight: '700'}}>Diziler</Text>
-                  <Text style={{color: '#f3f3f3', fontSize: width * 0.05, fontWeight: '700'}}>Filmler</Text>
-                  <Text style={{color: '#f3f3f3', fontSize: width * 0.05, fontWeight: '700'}}>Kategoriler</Text>
+              <Animated.View  style={{backgroundColor: headerBackgroundColor, bottom: headerHeight,display: 'flex'}}>
+                <View style={{ height: height / 7.5}} />
+                <Animated.View style={[{display: 'flex',flexDirection: 'row', opacity: headerOpacity, justifyContent: 'center', gap: width / 10, alignItems: 'center'}]}>
+                  <Text style={{color: '#F3F3F3', fontSize: width * 0.04, fontWeight: '400'}}>Series</Text>
+                  <Text style={{color: '#F3F3F3', fontSize: width * 0.04, fontWeight: '400'}}>Movies</Text>
+                  <View style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
+                    <Text style={{color: '#F3F3F3', fontSize: width * 0.04, fontWeight: '400'}}>Categories</Text>
+                    <MaterialIcons name="arrow-drop-down" size={24} color="#F3F3F3" />
+                  </View>
                 </Animated.View>
               </Animated.View>
             ),
