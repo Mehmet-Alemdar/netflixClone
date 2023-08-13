@@ -84,7 +84,7 @@ export default function App() {
             ),
             headerBackground: () => (
               <Animated.View  style={{backgroundColor: headerBackgroundColor, bottom: headerHeight,display: 'flex'}}>
-                <View style={{ height: height / 7.5}} />
+                <View style={{ height: height / 7}} />
                 <Animated.View style={[{display: 'flex',flexDirection: 'row', opacity: headerOpacity, justifyContent: 'center', gap: width / 10, alignItems: 'center'}]}>
                   <Text style={{color: '#F3F3F3', fontSize: width * 0.04, fontWeight: '400'}}>Series</Text>
                   <Text style={{color: '#F3F3F3', fontSize: width * 0.04, fontWeight: '400'}}>Movies</Text>

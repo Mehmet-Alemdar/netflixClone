@@ -14,7 +14,9 @@ const ContentVideo = ({data, title}) => {
           data={data}
           renderItem={({item}) => (
             <View style={{marginRight: 10, display: 'flex', alignItems: 'center'}}>
-              <Feather name="play-circle" size={50} color="white" style={{position: 'absolute', zIndex: 1, top: '30%', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 100}} />
+              <View style={{ position: 'absolute', zIndex: 1, top: '30%',backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 100}}>
+                <Feather name="play-circle" size={50} color="white" />
+              </View>
               <Image source={{uri: item}} style={styles.image}/>
               <LinearGradient
                 colors={['transparent','rgba(0,0,0,0.9)']} 
